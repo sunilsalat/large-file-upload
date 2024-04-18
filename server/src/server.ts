@@ -70,7 +70,6 @@ app.post("/assemble/:filename", async (req, res) => {
     try {
         const files = await fs.promises.readdir(tempDir);
         const sortedFiles = files.sort(sortNumerically);
-        console.log(sortedFiles);
         const writeStream = fs.createWriteStream(outputFile);
 
         for (const file of sortedFiles) {
@@ -112,7 +111,6 @@ app.get("/video/list", async (req: Request, res: Response) => {
 });
 
 app.get("/video/:filename", async (req: Request, res: Response) => {
-    console.log("req received", req.params.filename);
     const videoPath = path.join(
         __dirname,
         `../uploads/videos/${req.params.filename}`
@@ -120,7 +118,6 @@ app.get("/video/:filename", async (req: Request, res: Response) => {
 
     // Check if the file exists
     if (!fs.existsSync(videoPath)) {
-        console.log("inside no video foudn");
         return res.status(404).send("Video not found");
     }
 
@@ -129,9 +126,8 @@ app.get("/video/:filename", async (req: Request, res: Response) => {
     const range = req.headers.range;
 
     if (range) {
-        console.log("range", range);
         const parts = range.replace(/bytes=/, "").split("-");
-        const start = parseInt(parts[0], 10);
+        const start = parseInt(parts[0], 10); // convert string in to integer
         const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
         console.log({ start, end });
 
