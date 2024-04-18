@@ -7,14 +7,12 @@ export const Detail = () => {
 
     return (
         <div className={style.container}>
-            {detail && (
-                <ReactPlayer
-                    url={`http://localhost:8000/video/${filename}`}
-                    controls
-                    width="60%"
-                    height="60%"
-                />
-            )}
+            <ReactPlayer
+                url={`http://localhost:8000/video/${filename}`}
+                controls
+                width="60%"
+                height="60%"
+            />
         </div>
     );
 };

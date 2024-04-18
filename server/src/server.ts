@@ -61,9 +61,16 @@ app.post("/assemble/:filename", async (req, res) => {
     const tempDir = path.join(__dirname, "../uploads/others");
     const outputFile = path.join(__dirname, `../uploads/videos/${filename}`);
 
+    const sortNumerically = (a: any, b: any) => {
+        const numA = parseInt(a.match(/\d+/)[0]);
+        const numB = parseInt(b.match(/\d+/)[0]);
+        return numA - numB;
+    };
+
     try {
         const files = await fs.promises.readdir(tempDir);
-        const sortedFiles = files.sort();
+        const sortedFiles = files.sort(sortNumerically);
+        console.log(sortedFiles);
         const writeStream = fs.createWriteStream(outputFile);
 
         for (const file of sortedFiles) {
@@ -105,7 +112,7 @@ app.get("/video/list", async (req: Request, res: Response) => {
 });
 
 app.get("/video/:filename", async (req: Request, res: Response) => {
-    console.log("req received");
+    console.log("req received", req.params.filename);
     const videoPath = path.join(
         __dirname,
         `../uploads/videos/${req.params.filename}`
@@ -113,6 +120,7 @@ app.get("/video/:filename", async (req: Request, res: Response) => {
 
     // Check if the file exists
     if (!fs.existsSync(videoPath)) {
+        console.log("inside no video foudn");
         return res.status(404).send("Video not found");
     }
 
