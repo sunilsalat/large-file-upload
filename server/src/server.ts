@@ -141,7 +141,6 @@ app.get("/video/:filename", async (req: Request, res: Response) => {
         res.writeHead(206, headers);
         fileStream.pipe(res);
     } else {
-        console.log("in else part-------------");
         // Set headers for download
         // const headers = {
         //     "Content-Type": "video/mp4",
