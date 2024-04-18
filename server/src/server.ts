@@ -56,9 +56,10 @@ app.post(
     return res.status(200).json({ msg: "ok" });
 }); */
 
-app.post("/assemble", async (req, res) => {
+app.post("/assemble/:filename", async (req, res) => {
+    const { filename } = req.params;
     const tempDir = path.join(__dirname, "../uploads/others");
-    const outputFile = path.join(__dirname, "../uploads/videos/blob");
+    const outputFile = path.join(__dirname, `../uploads/videos/${filename}`);
 
     try {
         const files = await fs.promises.readdir(tempDir);
@@ -96,7 +97,66 @@ app.post("/assemble", async (req, res) => {
     }
 });
 
-app.get("video", async (req: Request, res: Response) => {});
+app.get("/video/list", async (req: Request, res: Response) => {
+    const files = await fs.promises.readdir(
+        path.join(__dirname, "../uploads/videos")
+    );
+    return res.status(200).json({ files });
+});
+
+app.get("/video/:filename", async (req: Request, res: Response) => {
+    console.log("req received");
+    const videoPath = path.join(
+        __dirname,
+        `../uploads/videos/${req.params.filename}`
+    );
+
+    // Check if the file exists
+    if (!fs.existsSync(videoPath)) {
+        return res.status(404).send("Video not found");
+    }
+
+    const videoStat = fs.statSync(videoPath);
+    const fileSize = videoStat.size;
+    const range = req.headers.range;
+
+    if (range) {
+        console.log("range", range);
+        const parts = range.replace(/bytes=/, "").split("-");
+        const start = parseInt(parts[0], 10);
+        const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+        console.log({ start, end });
+
+        const chunkSize = end - start + 1;
+        const fileStream = fs.createReadStream(videoPath, { start, end });
+
+        const headers = {
+            "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+            "Accept-Ranges": "bytes",
+            "Content-Length": chunkSize,
+            "Content-Type": "video/mp4",
+            "Cache-Control": "no-store",
+        };
+
+        res.writeHead(206, headers);
+        fileStream.pipe(res);
+    } else {
+        console.log("in else part-------------");
+        // Set headers for download
+        // const headers = {
+        //     "Content-Type": "video/mp4",
+        //     "Content-Disposition": `attachment; filename="${req.params.filename}"`,
+        // };
+        const headers = {
+            "Content-Length": fileSize,
+            "Content-Type": "video/mp4",
+            "Cache-Control": "no-store",
+        };
+
+        res.writeHead(200, headers);
+        fs.createReadStream(videoPath).pipe(res);
+    }
+});
 
 app.listen(8000, () => {
     console.log("server started on port 8000...");
