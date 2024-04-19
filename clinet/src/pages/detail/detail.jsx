@@ -8,7 +8,7 @@ export const Detail = () => {
     return (
         <div className={style.container}>
             <ReactPlayer
-                url={`http://localhost:8000/video/${filename}`}
+                url={`http://localhost:8000/api/video/${filename}`}
                 controls
                 width="60%"
                 height="60%"

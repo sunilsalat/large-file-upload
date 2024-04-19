@@ -19,7 +19,7 @@ export function VideoUpload() {
             formData.append("fileChunk", chunkData);
 
             // Make an HTTP POST request to upload the chunk
-            await axios.post("http://localhost:8000/upload", formData, {
+            await axios.post("http://localhost:8000/api/upload", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -48,11 +48,11 @@ export function VideoUpload() {
             }
 
             await axios.post(
-                `http://localhost:8000/assemble/${selectedFile.name}`,
+                `http://localhost:8000/api/assemble/${selectedFile.name}`,
                 {},
                 {
                     headers: {
-                        "Content-Type": "application/josn",
+                        "Content-Type": "application/json",
                     },
                 }
             );

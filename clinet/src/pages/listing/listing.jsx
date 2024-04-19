@@ -7,7 +7,7 @@ export const Listing = () => {
     const [list, setList] = useState();
 
     const fetchList = async () => {
-        const res = await axios.get("http://localhost:8000/video/list");
+        const res = await axios.get("http://localhost:8000/api/video/list");
         setList(res.data.files);
     };
 
