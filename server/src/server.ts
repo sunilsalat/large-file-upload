@@ -17,7 +17,7 @@ const expressServer = app.listen(8000, () => {
 });
 
 // TODO - Try to send videoStream over UDP
-const io = new Server(expressServer, {
+/* const io = new Server(expressServer, {
     cors: {
         origin: "http://localhost:5173",
     },
@@ -33,4 +33,4 @@ io.on("connection", (socket) => {
     });
 
     udpServer.bind(1234);
-});
+}); */

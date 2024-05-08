@@ -6,7 +6,7 @@ import { connectWithSocketServer } from "./utils/socketio";
 
 function App() {
     useEffect(() => {
-        connectWithSocketServer();
+        // connectWithSocketServer();
     }, []);
     return <RouterProvider router={Routing}></RouterProvider>;
 }
